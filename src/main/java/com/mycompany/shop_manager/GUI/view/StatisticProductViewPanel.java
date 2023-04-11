@@ -5,13 +5,25 @@
 package com.mycompany.shop_manager.GUI.view;
 
 
+import com.mycompany.shop_manager.BLL.StatisticBLL;
+import com.mycompany.shop_manager.DAL.Customers;
+import com.mycompany.shop_manager.DAL.Order;
+import com.mycompany.shop_manager.DAL.Orderdetail;
+import com.mycompany.shop_manager.DAL.Vegetable;
 import com.mycompany.shop_manager.GUI.ColorTheme;
 import static com.mycompany.shop_manager.GUI.view.StatisticView.p1;
 import static com.mycompany.shop_manager.GUI.view.StatisticView.p2;
 import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -22,18 +34,109 @@ public class StatisticProductViewPanel extends javax.swing.JPanel {
     /**
      * Creates new form StatisticProductViewPanel
      */
+    StatisticBLL bll= new StatisticBLL();
+    List<Orderdetail> listOrderdetail= bll.loadOrderdetail();
+    JDateChooser c1, c2;
+    Date date1, date2;
+    String strDate1, strDate2;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     public StatisticProductViewPanel() {
         initComponents();
         init();
         custom();
+        loadTable();
+        jTable1.setAutoCreateRowSorter(true);
+    }
+    public final void loadTable(){
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("ID");
+        model.addColumn("Tên sản phẩm");
+        model.addColumn("Danh mục");
+        model.addColumn("Số lượng");
+        model.addColumn("Ảnh");
+        model.addColumn("Giá");
+        int countProduct=0;
+        int countEachProduct = 0;
+        double countEachPrice = 0 ;
+        int location= -1;
+        for(Orderdetail o: listOrderdetail){
+            if(o.getOrder().getDate().after(date1) && o.getOrder().getDate().before(date2)){
+                for(int i = 0 ; i< countProduct; i++){
+                    int valueTable=(int) jTable1.getValueAt(i, 0);
+                        if(o.getVegetableID() == valueTable){
+                            location = i;
+                            break;
+                        }
+                    }
+                if(location != -1){// neu trùng thì cong thêm 
+                    countEachProduct+=o.getQuantity();
+                    countEachPrice+=o.getPrice();
+                    int sumProduct = (int) jTable1.getValueAt(location, 3);
+                    double sumPrice = (double) jTable1.getValueAt(location, 5);
+                    jTable1.setValueAt(countEachProduct + sumProduct, location, 3);
+                    jTable1.setValueAt(countEachPrice + sumPrice, location, 5);
+                    location = -1;
+                }else{// không trùng thì thêm 
+                    countProduct++;
+                    countEachProduct += o.getQuantity();
+                    countEachPrice += o.getPrice();
+                    model.addRow(new Object[]{
+                                o.getVegetableID(),
+                                o.getVegetable().getVegetableName(), 
+                                "[" + o.getVegetable().getCatagoryID() + "] " + o.getVegetable().getCatagory().getName(), 
+                                countEachProduct, 
+                                o.getVegetable().getImage(), 
+                                countEachPrice
+                            });
+                    jTable1.setModel(model);
+                    countEachProduct = 0;
+                    countEachPrice = 0;
+                }
+            }
+        }
+        lbl_CountProduct.setText("Tổng: "+countProduct+" sản phẩm");
     }
     public final void init(){
-        JDateChooser c1= new JDateChooser();
+        c1= new JDateChooser();
+        c1.setDate(new Date(2000-1900, 1-1, 1));
+        date1= c1.getDate();
+        strDate1 = dateFormat.format(date1);
         c1.setBounds(0, 0, 200, 30);
         pnl_contentTopLeft.add(c1);
-        JDateChooser c2= new JDateChooser();
+
+        c2= new JDateChooser();
+        c2.setDate(new Date());
+        date2= c2.getDate();
+        strDate2= dateFormat.format(date2);
         c2.setBounds(220, 0, 200, 30);
         pnl_contentTopLeft.add(c2);
+        
+        lbl_time.setText("Từ ngày "+strDate1+" đến "+strDate2);
+        
+        c1.addPropertyChangeListener("date", new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if ("date".equals(evt.getPropertyName())) {
+                Date selectedDate = (Date) evt.getNewValue();
+                date1= selectedDate;
+                strDate1 = dateFormat.format(selectedDate);
+                lbl_time.setText("Từ ngày "+strDate1+" đến "+strDate2);
+                loadTable();
+                }
+            }
+        });
+        c2.addPropertyChangeListener("date", new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if ("date".equals(evt.getPropertyName())) {
+                Date selectedDate = (Date) evt.getNewValue();
+                date2= selectedDate;
+                strDate2 = dateFormat.format(selectedDate);
+                lbl_time.setText("Từ ngày "+strDate1+" đến "+strDate2);
+                loadTable();
+                }
+            }
+        });
     }
     public final void custom(){
         lbl_headerProducts.setForeground(Color.decode(ColorTheme.primary));
@@ -120,23 +223,20 @@ public class StatisticProductViewPanel extends javax.swing.JPanel {
         pnl_contentTopRight.setLayout(pnl_contentTopRightLayout);
         pnl_contentTopRightLayout.setHorizontalGroup(
             pnl_contentTopRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_contentTopRightLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnl_contentTopRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbl_time, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                    .addComponent(lbl_CountProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_TitleProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addComponent(lbl_time, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+            .addComponent(lbl_TitleProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lbl_CountProduct, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pnl_contentTopRightLayout.setVerticalGroup(
             pnl_contentTopRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_contentTopRightLayout.createSequentialGroup()
-                .addGap(32, 32, 32)
+                .addContainerGap(30, Short.MAX_VALUE)
                 .addComponent(lbl_TitleProduct)
-                .addGap(18, 18, 18)
-                .addComponent(lbl_time)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_time, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbl_CountProduct)
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addGap(36, 36, 36))
         );
 
         javax.swing.GroupLayout pnl_ContentTopLayout = new javax.swing.GroupLayout(pnl_ContentTop);
@@ -151,8 +251,10 @@ public class StatisticProductViewPanel extends javax.swing.JPanel {
         );
         pnl_ContentTopLayout.setVerticalGroup(
             pnl_ContentTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnl_contentTopRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnl_contentTopLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(pnl_ContentTopLayout.createSequentialGroup()
+                .addComponent(pnl_contentTopRight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -188,15 +290,13 @@ public class StatisticProductViewPanel extends javax.swing.JPanel {
                 .addComponent(pnl_ContentTop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     public void setActive(JLabel lbl) {
         lbl_headerStatistic.setForeground(Color.BLACK);
         lbl_headerProducts.setForeground(Color.BLACK);
         lbl.setForeground(Color.decode(ColorTheme.primary));
-        p1.setVisible(true);
-        p2.setVisible(false);
     }
     private void lbl_headerProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_headerProductsMouseClicked
         // TODO add your handling code here:
@@ -206,6 +306,8 @@ public class StatisticProductViewPanel extends javax.swing.JPanel {
     private void lbl_headerStatisticMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_headerStatisticMouseClicked
         // TODO add your handling code here:
         setActive(lbl_headerStatistic);
+        p1.setVisible(true);
+        p2.setVisible(false);
     }//GEN-LAST:event_lbl_headerStatisticMouseClicked
 
 

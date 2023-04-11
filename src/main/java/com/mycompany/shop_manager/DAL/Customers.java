@@ -5,9 +5,9 @@
 package com.mycompany.shop_manager.DAL;
 
 import java.io.Serializable;
-import lombok.Data;
+import java.util.List;
 import javax.persistence.*;
-import javax.persistence.Table;
+import lombok.Data;
 
 /**
  *
@@ -33,6 +33,12 @@ public class Customers implements Serializable {
     @Column
     private String City;
     
-//    @OneToMany (mappedBy = "customers", fetch = FetchType.LAZY)  
-//    private Set<Order> listOrder;
+    @OneToMany (mappedBy = "customer")  
+    private List<Order> listOrders;
+    
+    @Override
+    public String toString()
+    {
+        return this.Fullname;
+    }
 }

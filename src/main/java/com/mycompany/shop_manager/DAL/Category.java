@@ -25,12 +25,12 @@ public class Category implements Serializable {
     @Column
     private String Description;
     
-//    @OneToMany (mappedBy = "catagory")  
-//    private List<Vegetable> listVegetable;
+    @OneToMany (mappedBy = "catagory")  
+    private List<Vegetable> listVegetable;
  
-//    @Override
-//    public String toString()
-//    {
-//        return this.Name;
-//    }
+    @Override
+    public String toString()
+    {
+        return this.Name;
+    }
 }

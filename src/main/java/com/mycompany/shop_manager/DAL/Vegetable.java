@@ -1,6 +1,6 @@
 package com.mycompany.shop_manager.DAL;
 
-import java.awt.List;
+import java.util.List;
 import java.io.Serializable;
 import javax.persistence.*;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class Vegetable implements Serializable {
     
     @Id
     private int VegetableID;
-    @Column 
+    @Column
     private int CatagoryID;
     @Column 
     private String VegetableName;
@@ -29,10 +29,17 @@ public class Vegetable implements Serializable {
     @Column
     private Double Price;
     
-//    @ManyToOne
-//    @JoinColumn(name="CatagoryID")
-//    private Category catagory;
+    @ManyToOne
+    @JoinColumn(name="CatagoryID",insertable = false, updatable = false)
+    private Category catagory;
     
-//    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "vegetable")
-//    private List Orders;
+    
+    @OneToMany (mappedBy = "vegetable")  
+    private List<Orderdetail> listOrderdetail;
+ 
+    @Override
+    public String toString()
+    {
+        return this.VegetableName;
+    }
 }

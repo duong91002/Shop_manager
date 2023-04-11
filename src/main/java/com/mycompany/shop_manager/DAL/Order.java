@@ -6,6 +6,7 @@ package com.mycompany.shop_manager.DAL;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import lombok.Data;
 import javax.persistence.*;
 import javax.persistence.Table;
@@ -19,6 +20,7 @@ import javax.persistence.Table;
 @Table(name = "`Order`")
 public class Order implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int OrderID;
     
     @Column
@@ -33,9 +35,19 @@ public class Order implements Serializable {
     @Column
     private String Note;
     
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name="CustomerID",nullable = false, foreignKey = @ForeignKey(name="fk_post_Customer"))
-//    private Customers customers;
+    @ManyToOne
+    @JoinColumn(name="CustomerID", insertable=false, updatable=false)
+    private Customers customer;
+    
+    
+    @OneToMany (mappedBy = "order")  
+    private List<Orderdetail> listOrderdetail;
+ 
+    @Override
+    public String toString()
+    {
+        return this.Note;
+    }
     
 //    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    @JoinTable(name = "Orderdetail", 
