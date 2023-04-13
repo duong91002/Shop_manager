@@ -41,7 +41,7 @@ public class StatisticViewPanel extends javax.swing.JPanel {
         model.addColumn("Ghi chú");
         int i=1;
         for (Order t : listOrder) {
-            model.addRow(new Object[]{t.getOrderID(), t.getCustomerID(), t.getDate(), t.getTotal(), t.getNote()});
+            model.addRow(new Object[]{t.getOrderID(), t.getCustomer(), t.getDate(), t.getTotal(), t.getNote()});
             i++;
         }
 

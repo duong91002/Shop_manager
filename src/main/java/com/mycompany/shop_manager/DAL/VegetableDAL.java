@@ -23,13 +23,40 @@ public class VegetableDAL {
      * @return
      */
     public List<Vegetable> loadVegetable(){
-        try(Session session = HibernateUtils.getSessionFactory().openSession();){
-            session.beginTransaction();
-            List<Vegetable> vegetable= session.createQuery("FROM Vegetable",Vegetable.class).list();
-            vegetable.forEach(System.out::println);
-            session.getTransaction().commit();
-            return vegetable;
-        }
+        session.beginTransaction();
+        List<Vegetable> vegetable= session.createQuery("FROM Vegetable",Vegetable.class).list();
+        //vegetable.forEach(System.out::println);
+        session.getTransaction().commit();
+        return vegetable;
+    }
+    
+    public Vegetable getVegetable(int VegetableID){
+        session.beginTransaction();
+        Vegetable o = session.get(Vegetable.class, VegetableID);
+        session.getTransaction().commit();
+        return o;
+    }
+    
+    public void addVegetable(Vegetable v){
+        session.beginTransaction();
+        session.save(v);
+        session.getTransaction().commit();
+    }
+    
+    public void updateVegetable(Vegetable v){
+        session.beginTransaction();
+        session.update(v);
+        session.getTransaction().commit();
+    }
+    
+    public void deleteVegetable(Vegetable v){
+        session.beginTransaction();
+        session.delete(v);
+        session.getTransaction().commit();
+    }
+    
+    public void closeSession(){
+        session.close();
     }
 //    public static void main(String[] args) {
 //        VegetableDAL t = new VegetableDAL();

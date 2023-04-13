@@ -30,4 +30,11 @@ public class Orderdetail implements Serializable{
     @Column
     private double Price;
     
+    @ManyToOne
+    @JoinColumn(name="OrderID",insertable = false,updatable = false)
+    private Order order;
+    
+    @ManyToOne
+    @JoinColumn(name="VegetableID",insertable = false,updatable = false)
+    private Vegetable vegetable;
 }

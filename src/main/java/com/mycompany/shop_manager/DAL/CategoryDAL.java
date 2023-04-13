@@ -22,7 +22,7 @@ public class CategoryDAL {
         List<Category> category;
         session.beginTransaction();
         category = session.createQuery("FROM Category", Category.class).list();
-        category.forEach(System.out::println);
+        //category.forEach(System.out::println);
         session.getTransaction().commit();
         return category;
 

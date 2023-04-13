@@ -1,6 +1,6 @@
 package com.mycompany.shop_manager.DAL;
 
-import java.awt.List;
+import java.util.List;
 import java.io.Serializable;
 import javax.persistence.*;
 import lombok.Data;
@@ -16,9 +16,7 @@ public class Vegetable implements Serializable {
     
     @Id
     private int VegetableID;
-    @Column 
-    private int CatagoryID;
-    @Column 
+    @Column(name = "Vegetable_Name") 
     private String VegetableName;
     @Column
     private String Unit;
@@ -28,6 +26,13 @@ public class Vegetable implements Serializable {
     private String Image;
     @Column
     private Double Price;
+    
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "vegetable")
+    private List<Orderdetail> orderdetail;
+    
+    @ManyToOne
+    @JoinColumn(name="CatagoryID")
+    private Category catagory;
     
 //    @ManyToOne
 //    @JoinColumn(name="CatagoryID")

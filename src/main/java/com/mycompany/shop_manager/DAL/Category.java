@@ -25,8 +25,12 @@ public class Category implements Serializable {
     @Column
     private String Description;
     
-//    @OneToMany (mappedBy = "catagory")  
-//    private List<Vegetable> listVegetable;
+    @OneToMany (fetch = FetchType.EAGER,mappedBy = "catagory")  
+    private List<Vegetable> listVegetable;
+    
+    public String toString(){
+        return this.Name;
+    }
  
 //    @Override
 //    public String toString()

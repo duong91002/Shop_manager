@@ -15,12 +15,19 @@ public class BillView extends JPanel {
 	/**
 	 * Create the panel.
 	 */
+    
+    public static BillProductPanel prod = new BillProductPanel();
+    public static BillPayPanel pay = new BillPayPanel();
+    public static BillOrderPanel order = new BillOrderPanel();
+    
 	public BillView() {
 		setLayout(new CardLayout(0, 0));
-		JLabel lblThisIsHome = new JLabel("This is bill view");
-		lblThisIsHome.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblThisIsHome, "name_140143002992856");
-		setBackground(Color.decode(ColorTheme.bg));
+                add(prod);
+                add(pay);
+                add(order);
+                order.setVisible(false);
+                pay.setVisible(false);
+                //setBackground(Color.decode(ColorTheme.bg));
 	}
 
 }

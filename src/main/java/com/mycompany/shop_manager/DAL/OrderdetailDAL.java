@@ -20,13 +20,33 @@ public class OrderdetailDAL {
         session = HibernateUtils.getSessionFactory().openSession();
     }
     public List<Orderdetail> loadOrderdetail(){
-        try(Session session = HibernateUtils.getSessionFactory().openSession();){
-            session.beginTransaction();
-            List<Orderdetail> orderdetail= session.createQuery("FROM Orderdetail",Orderdetail.class).list();
-            orderdetail.forEach(System.out::println);
-            session.getTransaction().commit();
-            return orderdetail;
-        }
+        session.beginTransaction();
+        List<Orderdetail> orderdetail= session.createQuery("FROM Orderdetail",Orderdetail.class).list();
+        //orderdetail.forEach(System.out::println);
+        session.getTransaction().commit();
+        return orderdetail;
+    }
+    
+    public void addOrderDetail(Orderdetail o){
+        session.beginTransaction();
+        session.save(o);
+        session.getTransaction().commit();
+    }
+    
+    public void updateOrderDetail(Orderdetail o){
+        session.beginTransaction();
+        session.update(o);
+        session.getTransaction().commit();
+    }
+    
+    public void deleteOrderDetail(Orderdetail o){
+        session.beginTransaction();
+        session.delete(o);
+        session.getTransaction().commit();
+    }
+    
+    public void closeSession(){
+        session.close();
     }
 //    public static void main(String[] args) {
 //        OrderdetailDAL a =new OrderdetailDAL();

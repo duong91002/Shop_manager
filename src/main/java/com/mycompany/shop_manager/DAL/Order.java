@@ -4,8 +4,10 @@
  */
 package com.mycompany.shop_manager.DAL;
 
+import com.mysql.cj.x.protobuf.MysqlxCursor;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import lombok.Data;
 import javax.persistence.*;
 import javax.persistence.Table;
@@ -22,9 +24,6 @@ public class Order implements Serializable {
     private int OrderID;
     
     @Column
-    private int CustomerID;
-    
-    @Column
     private Date Date;
     
     @Column
@@ -32,6 +31,13 @@ public class Order implements Serializable {
     
     @Column
     private String Note;
+    
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
+    private List<Orderdetail> ListOrderDetail;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="CustomerID",nullable=false,updatable=false)
+    private Customers customer;
     
 //    @ManyToOne(fetch = FetchType.EAGER)
 //    @JoinColumn(name="CustomerID",nullable = false, foreignKey = @ForeignKey(name="fk_post_Customer"))
