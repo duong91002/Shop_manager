@@ -14,7 +14,12 @@ public class ImportView extends JPanel {
 	/**
 	 * Create the panel.
 	 */
+        static CategoryViewPanel cateview=new CategoryViewPanel();
+        static ProductViewPanel productview=new ProductViewPanel();
 	public ImportView() {
+                add(cateview);
+                add(productview);
+                productview.setVisible(false);
 		setLayout(new CardLayout(0, 0));
 		JLabel lblThisIsHome = new JLabel("This is import view");
 		lblThisIsHome.setHorizontalAlignment(SwingConstants.CENTER);

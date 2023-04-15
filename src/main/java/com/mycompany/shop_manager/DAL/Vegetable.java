@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "Vegetable")
-public class Vegetable implements Serializable {
+public class Vegetable  implements Serializable {
     
     @Id
     private int VegetableID;
@@ -27,7 +27,46 @@ public class Vegetable implements Serializable {
     @Column 
     private String Image;
     @Column
-    private Double Price;
+    private float Price;
+    public int getVegetableID() {
+        return VegetableID;
+    }
+    public void setVegetableID(int VegetableID) {
+        this.VegetableID = VegetableID;
+    }
+    public int getCatagoryID() {
+        return CatagoryID;
+    }
+    public void setCatagoryID(int CatagoryID) {
+        this.CatagoryID = CatagoryID;
+    }
+    
+    public String getUnit() {
+        return Unit;
+    }
+
+    public void setUnit(String Unit) {
+        this.Unit = Unit;
+    }
+    public int getAmount(){
+        return Amount;
+    }
+    public void setAmount(int Amount){
+        this.Amount=Amount;
+    }
+    public String getImage() {
+        return Image;
+    }
+    public void setImage(String Image) {
+        this.Image = Image;
+    }
+    public float getPrice() {
+        return Price;
+    }
+    public void setPrice(float Price) {
+        this.Price = Price;
+    }
+
     
 //    @ManyToOne
 //    @JoinColumn(name="CatagoryID")

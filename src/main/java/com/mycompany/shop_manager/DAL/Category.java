@@ -5,7 +5,6 @@
 package com.mycompany.shop_manager.DAL;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
 
@@ -19,11 +18,29 @@ import lombok.Data;
  */
 public class Category implements Serializable { 
     @Id
-    private int CatagoryID;
+    private int CategoryID;
     @Column
     private String Name;
     @Column
     private String Description;
+    public int getCategoryID(){
+        return  CategoryID;
+    }
+    public String getName(){
+        return  Name;
+    }
+    public String getDescription(){
+        return  Description;
+    }
+    public void setCategoryID(int CategoryID){
+        this.CategoryID=CategoryID;
+    }
+    public void setName(String Name){
+        this.Name=Name;
+    }
+     public void setDescription(String Description){
+        this.Description=Description;
+    }
     
 //    @OneToMany (mappedBy = "catagory")  
 //    private List<Vegetable> listVegetable;

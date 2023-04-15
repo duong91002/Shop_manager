@@ -4,51 +4,65 @@
  */
 package com.mycompany.shop_manager.DAL;
 
-import java.util.List;
+import java.util.ArrayList;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 /**
  *
  * @author haidu
  */
 public class CategoryDAL {
-    Session session;
 
     public CategoryDAL() {
-        session = HibernateUtils.getSessionFactory().openSession();
+        Session session = HibernateUtils.getSessionFactory().openSession();
     }
 
-    public List loadCategory() {
-        List<Category> category;
-        session.beginTransaction();
-        category = session.createQuery("FROM Category", Category.class).list();
-        category.forEach(System.out::println);
-        session.getTransaction().commit();
-        return category;
-
+   public ArrayList<Category> loadCategory() {
+        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            ArrayList<Category> categories = (ArrayList<Category>) session.createQuery("FROM Category", Category.class).list();
+            categories.forEach(System.out::println);
+            session.getTransaction().commit();
+            return categories;
+        }
+   }
+   
+   public void addCategory(Category category){
+        try(Session session = HibernateUtils.getSessionFactory().openSession()){
+            session.beginTransaction();
+            session.save(category);
+            session.getTransaction().commit();
+        }
     }
-    public Category getCategory(int CategoryID)
-    {
-        Category c = session.get(Category.class, CategoryID);
-        return c;
+    
+    public void updateCategory(Category category){
+        try(Session session = HibernateUtils.getSessionFactory().openSession()){
+            session.beginTransaction();
+            session.update(category);
+            session.getTransaction().commit();
+        }
     }
-    public void addCategory(Category c)
-    {
-       
-        session.save(c);
-        
+    
+    public void deleteCategory(Category category){
+        try(Session session = HibernateUtils.getSessionFactory().openSession()){
+            
+            session.beginTransaction();
+            session.delete(category);   
+            session.getTransaction().commit();
+        }
     }
-    public void updateCategory(Category c)
-    {
-        session.update(c);
-        
+    
+    public static void main(String[] args) {
+        CategoryDAL categoryDAL = new CategoryDAL();
+        Category c = new Category();
+        c.setCategoryID(4);
+        c.setName("bbbb");
+        c.setDescription(null);
+        categoryDAL.loadCategory();
+//        categoryDAL.addCategory(c);
+//        categoryDAL.updateCategory(c);
+        categoryDAL.deleteCategory(c);
     }
-    public void deleteCategory(Category c)
-    {
-        session.delete(c);
-    }
-//    public static void main(String[] args) {
-//        CategoryDAL a =new CategoryDAL();
-//        a.loadCategory();
-//    }
 }
+

@@ -4,35 +4,68 @@
  */
 package com.mycompany.shop_manager.DAL;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
-
 /**
  *
  * @author haidu
  */
 public class VegetableDAL {
-    Session session;
+
+    
     
     public VegetableDAL() {
-        session = HibernateUtils.getSessionFactory().openSession();
+        Session session = HibernateUtils.getSessionFactory().openSession();
     }
 
     /**
      *
      * @return
      */
-    public List<Vegetable> loadVegetable(){
-        try(Session session = HibernateUtils.getSessionFactory().openSession();){
-            session.beginTransaction();
-            List<Vegetable> vegetable= session.createQuery("FROM Vegetable",Vegetable.class).list();
-            vegetable.forEach(System.out::println);
-            session.getTransaction().commit();
-            return vegetable;
-        }
+   public ArrayList<Vegetable> loadVegetable() {
+    try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+        session.beginTransaction();
+        ArrayList<Vegetable> vegetable = (ArrayList<Vegetable>) session.createQuery("FROM Vegetable", Vegetable.class).list();
+        vegetable.forEach(System.out::println);
+        session.getTransaction().commit();
+        return vegetable;
     }
-//    public static void main(String[] args) {
-//        VegetableDAL t = new VegetableDAL();
-//        t.loadVegetable();
-//    }
+}
+    public void addVegetable(Vegetable vegetable){
+      try(Session session=HibernateUtils.getSessionFactory().openSession()){
+          session.beginTransaction();
+          session.save(vegetable);
+          session.getTransaction().commit();
+      }
+    }
+    public void updateVegetable(Vegetable vegetable){
+         try(Session session=HibernateUtils.getSessionFactory().openSession()){
+          session.beginTransaction();
+          session.update(vegetable);
+          session.getTransaction().commit();
+      }
+    }
+     public void deleteVegetable(Vegetable vegetable){
+         try(Session session=HibernateUtils.getSessionFactory().openSession()){
+          session.beginTransaction();
+          session.delete(vegetable);
+          session.getTransaction().commit();
+      }
+    }
+    public static void main(String[] args) {
+        VegetableDAL t = new VegetableDAL();
+        Vegetable a=new Vegetable();
+        a.setVegetableID(0);
+        a.setVegetableName("a");
+        a.setAmount(0);
+        a.setImage("");
+        a.setPrice(0);
+        a.setUnit("abcdef");
+        a.setCatagoryID(2);
+        t.loadVegetable();
+//        t.addVegetable(a);
+//        t.updateVegetable(a);
+        t.deleteVegetable(a);
+    }
 }
